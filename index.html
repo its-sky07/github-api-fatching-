@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GITHUB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 700px;
+            width: 100%;
+            margin-top: 50px;
+
+        }
+
+        img {
+            border-radius: 10px;
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        .user-info {
+            margin-top: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-info h1 {
+            margin: 5px 0;
+        }
+
+        .user-info h3 {
+            margin: 0;
+            color: #666;
+        }
+
+        .repos {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 10px;
+            flex-wrap: wrap;
+            display: flex;
+            gap: 20px;
+        }
+
+        .repos a {
+            background: #e6e6e6;
+            font-size: 16px;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .ff {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        input[type="search"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div style="display: flex; align-items: center;">
+            <input type="search" id="search" placeholder="Search your GitHub account">
+            <button onclick="srch()">Search</button>
+        </div>
+
+        <div class="user-info">
+
+        </div>
+
+        <div class="repos">
+
+        </div>
+    </div>
+
+    <script>
+
+        async function api(username) {
+            const api = "https://api.github.com/users/";
+            const users = await fetch(api + username);
+            const rep = await fetch(api + username + "/repos");
+            const response = await users.json();
+            const repos = await rep.json();
+
+
+            let reposs = document.querySelector('.repos');
+            reposs.innerHTML = '';
+
+
+            let userInfo = `
+                <img src=${response.avatar_url} alt="">
+                <div class="contains">
+                    <div>
+                        <h1>${response.name || response.login}</h1>
+                        <h3>${response.login}</h3>
+                        <div class="ff">
+                            <div>${response.following} following</div>
+                            <div>${response.followers} followers</div>
+                        </div>
+                    </div>
+                </div>`;
+            document.querySelector('.user-info').innerHTML = userInfo;
+
+
+            repos.forEach(repo => {
+                let a = document.createElement('a');
+                a.textContent = repo.name;
+                a.target = "_blank"
+                a.href = repo.html_url;
+                reposs.appendChild(a);
+                search.value = "";
+            });
+        }
+
+        function srch() {
+            let search = document.getElementById('search');
+            if (search.value == "") {
+                alert('pls enter github account')
+            } else {
+                api(search.value);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
